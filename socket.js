@@ -1,4 +1,4 @@
-define("dojox/socket", ["dojo", "dojo/on", "dojo/Evented", "dojo/cookie", "dojo/_base/url"], function(dojo, on, Evented) {
+define("dojox/socket", ["dojo", "dojo/on", "dojo/Evented", "dojo/_base/lang", "dojo/cookie", "dojo/_base/url"], function(dojo, on, Evented, lang) {
 
 var WebSocket = window.WebSocket;
 
@@ -46,7 +46,11 @@ dojox.socket = Socket;
 Socket.WebSocket = function(args, fallback){
 	// summary:
 	//		A wrapper for WebSocket, than handles standard args and relative URLs
-	var ws = new WebSocket(new dojo._Url(document.baseURI.replace(/^http/i,'ws'), args.url));
+	var baseURI = window.location.href;
+	if (!lang.isString(baseURI)){
+    		baseURI = (document.URL || ((document.location) ? document.location.href : document.baseURI));
+	}
+	var ws = new WebSocket(new dojo._Url(baseURI.replace(/^http/i,'ws'), args.url));
 	ws.on = function(type, listener){
 		ws.addEventListener(type, listener, true);
 	};
